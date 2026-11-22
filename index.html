@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Подбор профессии</title><script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--red:#d42a2a;--ink:#14122a;--mut:#9496b0;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}
+body{margin:0;-webkit-text-size-adjust:100%;overscroll-behavior:none;min-height:100vh;display:grid;place-items:center;padding:24px;font:15px/1.4 "Segoe UI",Inter,system-ui,sans-serif;color:#fff;background:radial-gradient(900px 600px at 8% 8%,#ff7a5c,transparent 60%),radial-gradient(800px 700px at 95% 15%,#5b4bff,transparent 60%),radial-gradient(900px 600px at 65% 105%,#b04bd6,transparent 60%),linear-gradient(135deg,#e8607a,#7a52e0 60%,#3b3fb5) fixed}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.win{width:min(1180px,100%);height:min(720px,calc(var(--vh,100vh) - 48px));min-height:560px;display:grid;grid-template-columns:240px 1fr;border-radius:20px;overflow:hidden;background:rgba(18,16,38,.9);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 40px 90px rgba(10,5,40,.5)}
+.side{background:rgba(8,7,20,.5);padding:30px 24px;display:flex;flex-direction:column;gap:4px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-bottom:22px}
+.logo i{width:34px;height:24px;border-radius:7px;background:var(--red);display:grid;place-items:center}.logo svg{width:14px;height:14px}
+.lab{font-size:11px;font-weight:800;letter-spacing:.16em;margin:16px 0 8px 4px}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;color:var(--mut);font-weight:600;text-align:left;transition:color .2s,background .2s}
+.nav:hover{color:#fff;background:rgba(255,255,255,.06)}.nav.on{color:#fff}.nav svg{width:18px;height:18px;flex:none}
+.sp{flex:1}.ver{font-size:11px;color:var(--mut);text-align:center;margin-top:10px}
+.main{padding:32px 44px;overflow:auto;position:relative}
+h1{font-size:34px;line-height:1.15;margin:12px 0 10px;font-weight:800}
+h2{font-size:26px;margin:18px 0 6px;font-weight:800}h3{font-size:17px;margin:0 0 12px}
+.sub{color:var(--mut);margin:0 0 22px;max-width:560px}
+.top{display:flex;justify-content:space-between;gap:10px}
+.chip{background:rgba(255,255,255,.1);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600}
+.btn{border-radius:12px;padding:12px 26px;font-weight:800;transition:transform .18s,background .18s;will-change:transform}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.red{background:var(--red);box-shadow:0 8px 22px rgba(212,42,42,.35)}.red:hover{background:#e23636}
+.ghost{background:rgba(255,255,255,.1)}.ghost:hover{background:rgba(255,255,255,.17)}
+.big{padding:15px 32px;font-size:16px}.row{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 30px}
+.foot{display:flex;justify-content:space-between;margin-top:28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px}
+.card{--sh:0 10px 24px rgba(0,0,0,.25);background:#fff;color:var(--ink);border-radius:18px;padding:10px;text-align:left;display:flex;flex-direction:column;box-shadow:var(--sh);transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s;will-change:transform}
+.card:hover{transform:translateY(-5px);--sh:0 18px 34px rgba(0,0,0,.35)}.card.on{box-shadow:0 0 0 3px var(--red),var(--sh)}
+.thumb{height:92px;border-radius:12px;display:grid;place-items:center;position:relative;background:linear-gradient(135deg,hsl(var(--h) 75% 58%),hsl(calc(var(--h) + 45) 70% 40%))}
+.thumb>svg{width:34px;height:34px;color:#fff}
+.tick{position:absolute;right:8px;top:8px;width:22px;height:22px;border-radius:50%;background:var(--red);display:grid;place-items:center;transform:scale(0);transition:transform .28s cubic-bezier(.3,1.6,.5,1)}
+.tick svg{width:13px;height:13px;stroke-width:3;color:#fff}.card.on .tick{transform:scale(1)}
+.card .t{font-weight:800;font-size:14px;padding:12px 6px 3px}.card small{color:#6b6f85;font-size:12px;padding:0 6px 6px}
+.prog{height:6px;border-radius:9px;background:rgba(255,255,255,.12);margin-top:14px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--red);transform-origin:left;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.qcard{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:24px;padding:38px;margin-top:20px}
+.q{font-size:28px;font-weight:800;line-height:1.25;max-width:720px;margin:0 0 34px}
+.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.opt{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 8px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid var(--line);transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s,color .2s;will-change:transform}
+.opt b{font-size:26px}.opt span{font-size:12px;color:var(--mut)}
+.opt:hover{transform:translateY(-4px);background:rgba(255,255,255,.14)}.opt.on{background:#fff;color:var(--ink);transform:translateY(-4px)}.opt.on span{color:#4a4d66}
+.res{display:grid;grid-template-columns:1fr 340px;gap:32px;margin-top:6px}
+.mixes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:8px}
+.mix{display:grid;grid-template-columns:1.3fr 1fr;border-radius:18px;overflow:hidden;min-height:116px;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.mixl{padding:14px;font-weight:800;line-height:1.2;background:linear-gradient(135deg,hsl(var(--h) 70% 52%),hsl(calc(var(--h) + 40) 65% 32%))}
+.mixr{display:grid;place-items:center;background:rgba(0,0,0,.35)}.mixr b{font-size:30px}
+.lrow{display:grid;grid-template-columns:1fr auto;gap:8px 12px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.06);margin-top:12px;font-weight:700}
+.bar{grid-column:1/-1;height:6px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;background:#3ddc84;transform:scaleX(0);transform-origin:left;transition:transform .8s cubic-bezier(.2,.8,.2,1) .35s}.bar i.go{transform:scaleX(var(--v))}
+.hrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:12px;text-align:left;transition:background .18s}
+.hrow:hover{background:rgba(255,255,255,.07)}.hrow.on{background:rgba(255,255,255,.12)}
+.av{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;background:hsl(var(--h) 60% 45%)}
+.hrow div{flex:1;min-width:0}.hrow b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hrow small{color:var(--mut);font-size:12px}
+.mini{background:var(--red);border-radius:6px;padding:6px 10px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.link{color:var(--mut);font-size:13px;margin-top:10px;padding:6px 4px}.link:hover{color:#fff}
+.rise{animation:rise .55s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.slide{animation:sl .38s cubic-bezier(.2,.8,.2,1) backwards}@keyframes sl{from{opacity:0;transform:translateX(calc(var(--d)*48px))}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:12px;font-weight:700;opacity:0;pointer-events:none;transition:.3s}.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:860px){body{padding:0;display:block}
+.win{display:block;position:relative;width:100%;height:var(--vh,100vh);min-height:0;border-radius:0;background:rgba(15,13,34,.94)}
+.side{position:fixed;left:0;right:0;bottom:0;z-index:5;flex-direction:row;justify-content:space-around;gap:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:#0a0918;border-top:1px solid var(--line)}
+.side .lab,.side .sp,.side .ver,.side .logo,.side>.btn{display:none}
+.nav{flex:1;flex-direction:column;justify-content:center;gap:3px;padding:8px 6px;font-size:11px}.nav svg{width:22px;height:22px}.nav.on svg{color:#ff5a5a}
+.main{position:absolute;top:0;left:0;right:0;bottom:0;padding:18px 16px calc(168px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+h1{font-size:28px}h2{font-size:24px}.grid{grid-template-columns:repeat(2,1fr);gap:14px}
+.opts{grid-template-columns:1fr}.opt{flex-direction:row;justify-content:flex-start;gap:14px;padding:14px 18px}.opt b{font-size:22px;width:28px}
+.res{grid-template-columns:1fr;gap:20px}.mixes{grid-template-columns:1fr}.q{font-size:22px;margin-bottom:22px}.qcard{padding:22px}
+.foot{position:fixed;left:0;right:0;bottom:calc(68px + env(safe-area-inset-bottom));z-index:4;margin:0;padding:12px 16px;background:#0f0d22;border-top:1px solid var(--line);animation-delay:.15s}
+.toast{bottom:calc(84px + env(safe-area-inset-bottom))}.btn:hover,.card:hover,.opt:hover{transform:none}}
+</style></head><body>
+<div class="win"><nav class="side"><div class="logo"><i><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></i><span>Профи·Выбор</span></div>
+<div class="lab">МЕНЮ</div><button class="nav" data-act="home" data-n="home"></button><button class="nav" data-act="start" data-n="test"></button>
+<div class="lab">БИБЛИОТЕКА</div><button class="nav" data-act="hist" data-n="hist"></button>
+<div class="sp"></div><button class="btn red" data-act="start">Пройти тест</button><div class="ver">Подбор профессии v1.0</div></nav>
+<main class="main" id="main"></main></div><div class="toast" id="toast"></div>
+<script>
+const D={"traits": ["analytic", "creative", "social", "practical", "leader", "order"], "interests": [["tech", "Технологии и компьютеры"], ["science", "Наука и исследования"], ["art", "Творчество и дизайн"], ["people", "Общение и помощь людям"], ["business", "Бизнес и финансы"], ["nature", "Природа и животные"], ["hands", "Работа руками, техника"], ["words", "Слово, язык, медиа"], ["health", "Здоровье и спорт"], ["teach", "Обучение и наставничество"]], "questions": [["Мне нравится разбираться в сложных задачах и искать закономерности.", "analytic"], ["Я люблю считать, анализировать данные, работать с цифрами.", "analytic"], ["Мне важно придумывать что-то новое и необычное.", "creative"], ["Я легко выражаю себя через текст, рисунок, музыку или дизайн.", "creative"], ["Мне нравится выслушивать людей и помогать им решать проблемы.", "social"], ["Мне легко знакомиться и находить общий язык с незнакомыми.", "social"], ["Я предпочитаю делать что-то руками, а не сидеть за бумагами.", "practical"], ["Мне нравится брать ответственность и вести людей за собой.", "leader"], ["Я люблю убеждать, договариваться и добиваться своего.", "leader"], ["Мне комфортно, когда есть чёткий порядок, план и правила.", "order"]], "professions": [{"name": "Программист", "desc": "Пишет программы, сайты и приложения.", "interests": ["tech"], "traits": {"analytic": 3, "creative": 1, "social": 0, "practical": 1, "leader": 0, "order": 2}, "id": 0}, {"name": "Data-аналитик", "desc": "Находит выводы в больших массивах данных.", "interests": ["tech", "science", "business"], "traits": {"analytic": 3, "creative": 1, "social": 1, "practical": 0, "leader": 1, "order": 2}, "id": 1}, {"name": "Специалист по кибербезопасности", "desc": "Защищает системы и данные от атак.", "interests": ["tech"], "traits": {"analytic": 3, "creative": 1, "social": 0, "practical": 2, "leader": 1, "order": 3}, "id": 2}, {"name": "Системный администратор", "desc": "Настраивает и поддерживает IT-инфраструктуру.", "interests": ["tech", "hands"], "traits": {"analytic": 2, "creative": 0, "social": 1, "practical": 3, "leader": 0, "order": 3}, "id": 3}, {"name": "UX/UI-дизайнер", "desc": "Проектирует удобные и красивые интерфейсы.", "interests": ["art", "tech"], "traits": {"analytic": 1, "creative": 3, "social": 2, "practical": 0, "leader": 1, "order": 1}, "id": 4}, {"name": "Графический дизайнер", "desc": "Создаёт визуальный образ брендов и продуктов.", "interests": ["art"], "traits": {"analytic": 0, "creative": 3, "social": 1, "practical": 1, "leader": 0, "order": 1}, "id": 5}, {"name": "Архитектор", "desc": "Проектирует здания и пространства.", "interests": ["art", "hands", "science"], "traits": {"analytic": 2, "creative": 3, "social": 1, "practical": 2, "leader": 1, "order": 2}, "id": 6}, {"name": "Журналист / редактор", "desc": "Собирает информацию и рассказывает о ней.", "interests": ["words", "people"], "traits": {"analytic": 1, "creative": 2, "social": 3, "practical": 0, "leader": 1, "order": 1}, "id": 7}, {"name": "Копирайтер / контент-маркетолог", "desc": "Пишет тексты, которые продают и вовлекают.", "interests": ["words", "business", "art"], "traits": {"analytic": 1, "creative": 3, "social": 1, "practical": 0, "leader": 1, "order": 1}, "id": 8}, {"name": "Переводчик", "desc": "Переводит тексты и речь между языками.", "interests": ["words"], "traits": {"analytic": 1, "creative": 1, "social": 1, "practical": 0, "leader": 0, "order": 3}, "id": 9}, {"name": "Врач", "desc": "Диагностирует и лечит людей.", "interests": ["health", "science", "people"], "traits": {"analytic": 3, "creative": 0, "social": 2, "practical": 2, "leader": 1, "order": 3}, "id": 10}, {"name": "Психолог", "desc": "Помогает людям разобраться в себе и своих отношениях.", "interests": ["people", "health", "science"], "traits": {"analytic": 2, "creative": 1, "social": 3, "practical": 0, "leader": 0, "order": 2}, "id": 11}, {"name": "Тренер / инструктор по фитнесу", "desc": "Помогает людям становиться сильнее и здоровее.", "interests": ["health", "people", "teach"], "traits": {"analytic": 0, "creative": 1, "social": 3, "practical": 2, "leader": 2, "order": 1}, "id": 12}, {"name": "Учитель / преподаватель", "desc": "Объясняет, вдохновляет и растит учеников.", "interests": ["teach", "people"], "traits": {"analytic": 1, "creative": 1, "social": 3, "practical": 0, "leader": 2, "order": 2}, "id": 13}, {"name": "Научный сотрудник", "desc": "Ставит эксперименты и открывает новое.", "interests": ["science"], "traits": {"analytic": 3, "creative": 2, "social": 0, "practical": 1, "leader": 0, "order": 2}, "id": 14}, {"name": "Биолог / эколог", "desc": "Изучает живую природу и защищает её.", "interests": ["nature", "science"], "traits": {"analytic": 3, "creative": 1, "social": 1, "practical": 2, "leader": 0, "order": 2}, "id": 15}, {"name": "Ветеринар", "desc": "Лечит животных.", "interests": ["nature", "health"], "traits": {"analytic": 2, "creative": 0, "social": 2, "practical": 3, "leader": 0, "order": 2}, "id": 16}, {"name": "Агроном / фермер", "desc": "Выращивает культуры и управляет хозяйством.", "interests": ["nature", "hands", "business"], "traits": {"analytic": 2, "creative": 0, "social": 1, "practical": 3, "leader": 2, "order": 2}, "id": 17}, {"name": "Инженер-конструктор", "desc": "Проектирует машины, механизмы и конструкции.", "interests": ["hands", "science", "tech"], "traits": {"analytic": 3, "creative": 2, "social": 0, "practical": 2, "leader": 0, "order": 3}, "id": 18}, {"name": "Электрик / механик", "desc": "Монтирует и чинит оборудование.", "interests": ["hands", "tech"], "traits": {"analytic": 1, "creative": 0, "social": 1, "practical": 3, "leader": 0, "order": 2}, "id": 19}, {"name": "Повар / шеф-повар", "desc": "Создаёт блюда и управляет кухней.", "interests": ["hands", "art", "people"], "traits": {"analytic": 0, "creative": 3, "social": 1, "practical": 3, "leader": 2, "order": 2}, "id": 20}, {"name": "Предприниматель", "desc": "Строит собственный бизнес с нуля.", "interests": ["business"], "traits": {"analytic": 1, "creative": 2, "social": 2, "practical": 0, "leader": 3, "order": 1}, "id": 21}, {"name": "Менеджер проектов", "desc": "Организует команду и доводит проекты до результата.", "interests": ["business", "people", "tech"], "traits": {"analytic": 1, "creative": 1, "social": 2, "practical": 0, "leader": 3, "order": 3}, "id": 22}, {"name": "Маркетолог", "desc": "Изучает рынок и продвигает продукты.", "interests": ["business", "art", "words"], "traits": {"analytic": 2, "creative": 2, "social": 2, "practical": 0, "leader": 2, "order": 1}, "id": 23}, {"name": "Финансовый аналитик / бухгалтер", "desc": "Считает деньги, риски и эффективность.", "interests": ["business", "science"], "traits": {"analytic": 3, "creative": 0, "social": 0, "practical": 0, "leader": 1, "order": 3}, "id": 24}, {"name": "Юрист", "desc": "Защищает права и работает с законом.", "interests": ["words", "people", "business"], "traits": {"analytic": 3, "creative": 0, "social": 2, "practical": 0, "leader": 2, "order": 3}, "id": 25}, {"name": "HR-специалист", "desc": "Подбирает и развивает людей в компании.", "interests": ["people", "business"], "traits": {"analytic": 1, "creative": 1, "social": 3, "practical": 0, "leader": 2, "order": 2}, "id": 26}, {"name": "Социальный работник", "desc": "Поддерживает людей в трудной жизненной ситуации.", "interests": ["people", "health"], "traits": {"analytic": 1, "creative": 0, "social": 3, "practical": 1, "leader": 1, "order": 2}, "id": 27}, {"name": "Режиссёр / видеомонтажёр", "desc": "Создаёт фильмы, ролики и истории.", "interests": ["art", "words", "tech"], "traits": {"analytic": 1, "creative": 3, "social": 2, "practical": 1, "leader": 2, "order": 1}, "id": 28}, {"name": "Музыкант / звукорежиссёр", "desc": "Пишет, исполняет и записывает музыку.", "interests": ["art", "tech"], "traits": {"analytic": 1, "creative": 3, "social": 1, "practical": 2, "leader": 0, "order": 1}, "id": 29}]};
+//LOGIC
+const T=D.traits,rd=x=>{const f=Math.floor(x),d=x-f;return d>.5?f+1:d<.5?f:(f%2?f+1:f)};
+function levels(a){const s={},c={};T.forEach(t=>{s[t]=0;c[t]=0});D.questions.forEach(([,t],i)=>{s[t]+=(a[i]-1)/4;c[t]++});const L={};T.forEach(t=>L[t]=c[t]?s[t]/c[t]:.5);return L}
+function rank(sel,a){const L=levels(a);return D.professions.map(p=>{const hit=p.interests.filter(k=>sel.includes(k)).length,is=p.interests.length?hit/p.interests.length:0,ts=1-T.reduce((x,t)=>x+Math.abs(L[t]-p.traits[t]/3),0)/T.length;return{id:p.id,name:p.name,desc:p.desc,score:rd((.5*is+.5*ts)*100)}}).sort((x,y)=>y.score-x.score||(x.name<y.name?-1:1)).slice(0,7)}
+//ENDLOGIC
+const $=s=>document.querySelector(s),M=$('#main');
+const IC={tech:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/>',science:'<path d="M9 3h6M10 3v6l-5 10h14L14 9V3"/>',art:'<circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16" cy="10" r="1"/>',people:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M17 11a3 3 0 100-6"/>',business:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',nature:'<path d="M12 21V9M12 9c0-4 4-6 8-6 0 5-3 8-8 6M12 13c0-3-3-5-7-5 0 4 2 6 7 5"/>',hands:'<path d="M14 6l4 4-9 9H5v-4zM12 8l4 4"/>',words:'<path d="M5 4h14v12H9l-4 4z"/>',health:'<path d="M12 20s-8-5-8-11a4.5 4.5 0 018-3 4.5 4.5 0 018 3c0 6-8 11-8 11z"/>',teach:'<path d="M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5"/>'};
+const NAV={home:['Главная','<path d="M3 11l9-8 9 8v10H3z"/>'],test:['Тест','<path d="M9 4h6v3H9zM6 5h12v16H6zM9 12h6M9 16h4"/>'],hist:['История','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>']};
+const SC=['совсем не про меня','скорее нет','трудно сказать','скорее да','точно про меня'];
+const svg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
+document.querySelectorAll('[data-n]').forEach(b=>b.innerHTML=svg(NAV[b.dataset.n][1])+NAV[b.dataset.n][0]);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hue=s=>[...s].reduce((a,c)=>a+c.charCodeAt(0),0)%360;
+const R=i=>`class="rise" style="--i:${i}"`;
+const tg=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)?Telegram.WebApp:null;
+const ver=v=>!!tg&&tg.isVersionAtLeast(v),cloud=ver('6.9');
+const nm=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user?tg.initDataUnsafe.user.first_name:'';
+const hap=(k,v)=>{try{ver('6.1')&&tg.HapticFeedback[k](v)}catch(e){}};
+const ask=(m,cb)=>{if(ver('6.2'))tg.showConfirm(m,ok=>{ok&&cb()});else if(confirm(m))cb()};
+const vhs=()=>document.documentElement.style.setProperty('--vh',((tg&&tg.viewportStableHeight)||innerHeight)+'px');
+vhs();addEventListener('resize',vhs);
+if(tg){try{tg.ready();tg.expand();tg.onEvent('viewportChanged',vhs);if(ver('6.9')){tg.setHeaderColor('#0f0d22');tg.setBackgroundColor('#0f0d22')}if(ver('7.7'))tg.disableVerticalSwipes();tg.BackButton.onClick(()=>{const f={int:A.home,q:A.qback,res:A.home}[st.view];f&&f()})}catch(e){}}
+function bb(){try{if(ver('6.1'))st.view==='home'?tg.BackButton.hide():tg.BackButton.show()}catch(e){}}
+/* История: в Telegram — в облаке (CloudStorage, общая между устройствами), плюс копия в localStorage.
+   В записи хранятся id профессий (не названия), чтобы влезало в лимит 4096 символов на ключ. */
+const LS='cq2',PBY=Object.fromEntries(D.professions.map(p=>[p.id,p]));
+const fmt=t=>new Date(t).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const pack=e=>({t:e.t,i:e.interests,a:e.answers.join(''),r:e.results.map(r=>[r.id,r.score])});
+const unpack=x=>({t:x.t,date:fmt(x.t),interests:x.i,answers:[...x.a].map(Number),results:x.r.filter(([id])=>PBY[id]).map(([id,sc])=>({id,name:PBY[id].name,desc:PBY[id].desc,score:sc}))});
+let HIST=[];
+function save(){let a=HIST.slice(-20).map(pack),s=JSON.stringify(a);while(s.length>3900&&a.length>1){a.shift();s=JSON.stringify(a)}HIST=HIST.slice(-a.length);try{localStorage.setItem(LS,s)}catch(e){}if(cloud)try{tg.CloudStorage.setItem('hist',s)}catch(e){}}
+function load(cb){let loc=[],done=false;try{loc=JSON.parse(localStorage.getItem(LS))||[]}catch(e){}
+ const fin=a=>{if(done)return;done=true;try{HIST=a.map(unpack).filter(e=>e.results.length)}catch(e){HIST=[]}cb()};
+ if(!cloud)return fin(loc);setTimeout(()=>fin(loc),1800);
+ try{tg.CloudStorage.getItem('hist',(err,v)=>{let c=[];try{c=JSON.parse(v)||[]}catch(e){}fin(!err&&c.length?c:loc)})}catch(e){fin(loc)}}
+const st={sel:[],ans:Array(D.questions.length).fill(0),q:0,view:'home',prog:0};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2200)}
+function show(view,html,nav){st.view=view;bb();M.innerHTML=html;M.scrollTop=0;document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.n===nav));
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{M.querySelectorAll('.bar i').forEach(i=>i.classList.add('go'));const p=$('.prog i');if(p)p.style.transform=`scaleX(${p.dataset.to})`}));
+ M.querySelectorAll('.pct').forEach(el=>{const v=+el.dataset.v,t0=performance.now()+350;(function f(n){const p=Math.min(1,Math.max(0,(n-t0)/900));el.textContent=Math.round(v*(1-Math.pow(1-p,3)))+'%';if(p<1)requestAnimationFrame(f)})(performance.now())})}
+const histRows=(h,cur)=>h.map((e,i)=>({e,i})).reverse().slice(0,5).map(({e,i},k)=>`<button class="hrow rise ${cur&&e.t===cur.t?'on':''}" style="--i:${k+3};--h:${hue(e.results[0].name)}" data-act="open" data-i="${i}"><span class="av">${esc(e.results[0].name[0])}</span><div><b>${esc(e.results[0].name)} · ${e.results[0].score}%</b><small>${e.date}</small></div><span class="mini">Открыть</span></button>`).join('');
+function home(){const h=HIST;show('home',`<h1 ${R(0)}>Какая профессия вам подходит?</h1><p class="sub rise" style="--i:1">${nm?'Привет, '+esc(nm)+'! ':''}Выберите интересы, ответьте на ${D.questions.length} коротких вопросов — и получите список подходящих профессий.</p>
+<div class="row rise" style="--i:2"><button class="btn red big" data-act="start">Пройти тест</button>${h.length?'<button class="btn ghost big" data-act="open" data-i="'+(h.length-1)+'">Последний результат</button>':''}</div>${h.length?'<h3 class="rise" style="--i:3">Недавние результаты</h3>'+histRows(h):''}`,'home')}
+function interests(){const c=st.sel.length;show('int',`<div class="top rise"><span class="chip">Шаг 1 из 2</span><span class="chip" id="cnt">Выбрано: ${c}</span></div><h2 ${R(1)}>Что вам интересно?</h2><p class="sub rise" style="--i:2">Отметьте всё, что откликается.</p>
+<div class="grid">${D.interests.map(([k,l],i)=>{const on=st.sel.includes(k);return`<button class="card rise ${on?'on':''}" style="--i:${i+3};--h:${i*36+10}" data-act="tog" data-k="${k}" aria-pressed="${on}"><span class="thumb">${svg(IC[k])}<span class="tick">${svg('<path d="M5 12l5 5 9-10"/>')}</span></span><span class="t">${esc(l)}</span><small>${on?'Выбрано':'Нажмите, чтобы выбрать'}</small></button>`}).join('')}</div>
+<div class="foot rise" style="--i:14"><button class="btn ghost" data-act="home">Назад</button><button class="btn red" data-act="toq">Далее</button></div>`,'test')}
+function question(d=0){const i=st.q,n=D.questions.length,f0=st.prog,f1=(i+1)/n;st.prog=f1;
+ show('q',`<div class="top"><span class="chip">Вопрос ${i+1} из ${n}</span></div><div class="prog"><i style="transform:scaleX(${f0});--x:0" data-to="${f1}"></i></div>
+<div class="qcard ${d?'slide':'rise'}" style="--d:${d}"><p class="q">${esc(D.questions[i][0])}</p><div class="opts">${SC.map((l,j)=>`<button class="opt ${st.ans[i]===j+1?'on':''}" data-act="ans" data-v="${j+1}"><b>${j+1}</b><span>${l}</span></button>`).join('')}</div></div>
+<div class="foot"><button class="btn ghost" data-act="qback">Назад</button><button class="btn red" data-act="qnext">${i+1<n?'Далее':'Результат'}</button></div>`,'test')}
+function results(e){const r=e.results,h=HIST;
+ show('res',`<div class="top rise"><span class="chip">Тест от ${e.date}</span></div><h1 ${R(1)}>Вам подходят</h1>
+<div class="res"><div><div class="mixes">${r.slice(0,4).map((p,i)=>`<div class="mix rise" style="--i:${i+2};--h:${hue(p.name)}"><div class="mixl">${esc(p.name)}</div><div class="mixr"><b class="pct" data-v="${p.score}">0%</b></div></div>`).join('')}</div>
+${r.slice(4).map((p,i)=>`<div class="lrow rise" style="--i:${i+6}"><span>${esc(p.name)}</span><span>${p.score}%</span><div class="bar"><i style="--v:${p.score/100}"></i></div></div>`).join('')}
+<p class="sub rise" style="--i:9;margin-top:18px">${esc(r[0].desc)}</p></div>
+<div><h3 class="rise" style="--i:2">История тестов</h3>${histRows(h,e)}<div class="row rise" style="--i:8;margin:18px 0 0;flex-direction:column;align-items:flex-start"><button class="btn red" data-act="start">Пройти заново</button><button class="link" data-act="wipe">Очистить историю</button></div></div></div>`,'hist')}
+const A={home,start(){st.sel=[];st.ans.fill(0);st.q=0;st.prog=0;interests()},
+ hist(){const h=HIST;h.length?results(h[h.length-1]):toast('Пока нет сохранённых результатов')},
+ open(b){const e=HIST[+b.dataset.i];if(e)results(e)},
+ tog(b){const k=b.dataset.k,on=!st.sel.includes(k);on?st.sel.push(k):st.sel.splice(st.sel.indexOf(k),1);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('small').textContent=on?'Выбрано':'Нажмите, чтобы выбрать';$('#cnt').textContent='Выбрано: '+st.sel.length},
+ toq(){st.sel.length?(st.q=0,st.prog=0,question()):toast('Отметьте хотя бы один пункт')},
+ ans(b){st.ans[st.q]=+b.dataset.v;M.querySelectorAll('.opt').forEach(o=>o.classList.toggle('on',o===b))},
+ qback(){st.q?(st.q--,question(-1)):interests()},
+ qnext(){if(!st.ans[st.q])return toast('Выберите один из вариантов');if(st.q+1<D.questions.length){st.q++;question(1)}else{const e={t:Date.now(),interests:st.sel.slice(),answers:st.ans.slice(),results:rank(st.sel,st.ans)};e.date=fmt(e.t);HIST.push(e);save();hap('notificationOccurred','success');results(e)}},
+ wipe(){ask('Удалить все сохранённые результаты?',()=>{HIST=[];save();home()})}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&A[b.dataset.act]){hap('impactOccurred','light');A[b.dataset.act](b)}});
+document.addEventListener('keydown',e=>{if(st.view!=='q')return;if(e.key>='1'&&e.key<='5'){const o=M.querySelectorAll('.opt')[+e.key-1];o&&o.click()}else if(e.key==='Enter')A.qnext();else if(e.key==='ArrowLeft')A.qback()});
+load(home);
+</script></body></html>
