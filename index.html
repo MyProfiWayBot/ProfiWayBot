@@ -59,22 +59,27 @@ h2{font-size:26px;margin:18px 0 6px;font-weight:800}h3{font-size:17px;margin:0 0
 .rise{animation:rise .55s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*45ms)}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}}
 .slide{animation:sl .38s cubic-bezier(.2,.8,.2,1) backwards}@keyframes sl{from{opacity:0;transform:translateX(calc(var(--d)*48px))}}
+.hero{border-radius:22px;padding:26px 28px;margin:6px 0 26px;background:linear-gradient(135deg,hsl(var(--h) 65% 38%),hsl(calc(var(--h) + 50) 60% 24%));box-shadow:0 14px 34px rgba(0,0,0,.3)}
+.hero small{font-weight:800;letter-spacing:.16em;font-size:11px}.hero h3{font-size:24px;margin:10px 0 8px}.hero p{margin:0 0 18px;font-size:16px;line-height:1.5;max-width:640px}
+.fgrid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}.fcard{cursor:default}.fcard small{font-size:13px;line-height:1.45;padding:0 6px 8px}
+.tease{display:block;width:100%;text-align:left;border-radius:18px;padding:16px 18px;background:rgba(255,255,255,.07);border:1px solid var(--line);margin-bottom:22px;transition:background .2s}
+.tease:hover{background:rgba(255,255,255,.12)}.tease small{display:block;color:var(--mut);font-weight:800;letter-spacing:.14em;font-size:11px}.tease b{display:block;margin:6px 0 4px;font-size:16px}.tease span{display:block;color:#c9cae0;font-size:14px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#fff;color:var(--ink);padding:12px 20px;border-radius:12px;font-weight:700;opacity:0;pointer-events:none;transition:.3s}.toast.on{opacity:1;transform:translate(-50%,0)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:860px){body{padding:0;display:block}
 .win{display:block;position:relative;width:100%;height:var(--vh,100vh);min-height:0;border-radius:0;background:rgba(15,13,34,.94)}
-.side{position:fixed;left:0;right:0;bottom:0;z-index:5;flex-direction:row;justify-content:space-around;gap:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:#0a0918;border-top:1px solid var(--line)}
+.side{position:fixed;left:0;right:0;bottom:0;z-index:5;flex-direction:row;justify-content:space-around;gap:0;padding:6px 8px calc(6px + var(--sb,env(safe-area-inset-bottom)));background:#0a0918;border-top:1px solid var(--line)}
 .side .lab,.side .sp,.side .ver,.side .logo,.side>.btn{display:none}
 .nav{flex:1;flex-direction:column;justify-content:center;gap:3px;padding:8px 6px;font-size:11px}.nav svg{width:22px;height:22px}.nav.on svg{color:#ff5a5a}
-.main{position:absolute;top:0;left:0;right:0;bottom:0;padding:18px 16px calc(168px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.main{position:absolute;top:0;left:0;right:0;bottom:0;padding:calc(18px + var(--st,0px)) 16px calc(168px + var(--sb,env(safe-area-inset-bottom)));-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 h1{font-size:28px}h2{font-size:24px}.grid{grid-template-columns:repeat(2,1fr);gap:14px}
-.opts{grid-template-columns:1fr}.opt{flex-direction:row;justify-content:flex-start;gap:14px;padding:14px 18px}.opt b{font-size:22px;width:28px}
+.fgrid{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.opt{flex-direction:row;justify-content:flex-start;gap:14px;padding:14px 18px}.opt b{font-size:22px;width:28px}
 .res{grid-template-columns:1fr;gap:20px}.mixes{grid-template-columns:1fr}.q{font-size:22px;margin-bottom:22px}.qcard{padding:22px}
-.foot{position:fixed;left:0;right:0;bottom:calc(68px + env(safe-area-inset-bottom));z-index:4;margin:0;padding:12px 16px;background:#0f0d22;border-top:1px solid var(--line);animation-delay:.15s}
-.toast{bottom:calc(84px + env(safe-area-inset-bottom))}.btn:hover,.card:hover,.opt:hover{transform:none}}
+.foot{position:fixed;left:0;right:0;bottom:calc(68px + var(--sb,env(safe-area-inset-bottom)));z-index:4;margin:0;padding:12px 16px;background:#0f0d22;border-top:1px solid var(--line);animation-delay:.15s}
+.toast{bottom:calc(84px + var(--sb,env(safe-area-inset-bottom)))}.btn:hover,.card:hover,.opt:hover{transform:none}}
 </style></head><body>
 <div class="win"><nav class="side"><div class="logo"><i><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></i><span>Профи·Выбор</span></div>
-<div class="lab">МЕНЮ</div><button class="nav" data-act="home" data-n="home"></button><button class="nav" data-act="start" data-n="test"></button>
+<div class="lab">МЕНЮ</div><button class="nav" data-act="home" data-n="home"></button><button class="nav" data-act="facts" data-n="facts"></button>
 <div class="lab">БИБЛИОТЕКА</div><button class="nav" data-act="hist" data-n="hist"></button>
 <div class="sp"></div><button class="btn red" data-act="start">Пройти тест</button><div class="ver">Подбор профессии v1.0</div></nav>
 <main class="main" id="main"></main></div><div class="toast" id="toast"></div>
@@ -87,7 +92,7 @@ function rank(sel,a){const L=levels(a);return D.professions.map(p=>{const hit=p.
 //ENDLOGIC
 const $=s=>document.querySelector(s),M=$('#main');
 const IC={tech:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/>',science:'<path d="M9 3h6M10 3v6l-5 10h14L14 9V3"/>',art:'<circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16" cy="10" r="1"/>',people:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M17 11a3 3 0 100-6"/>',business:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',nature:'<path d="M12 21V9M12 9c0-4 4-6 8-6 0 5-3 8-8 6M12 13c0-3-3-5-7-5 0 4 2 6 7 5"/>',hands:'<path d="M14 6l4 4-9 9H5v-4zM12 8l4 4"/>',words:'<path d="M5 4h14v12H9l-4 4z"/>',health:'<path d="M12 20s-8-5-8-11a4.5 4.5 0 018-3 4.5 4.5 0 018 3c0 6-8 11-8 11z"/>',teach:'<path d="M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5"/>'};
-const NAV={home:['Главная','<path d="M3 11l9-8 9 8v10H3z"/>'],test:['Тест','<path d="M9 4h6v3H9zM6 5h12v16H6zM9 12h6M9 16h4"/>'],hist:['История','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>']};
+const NAV={home:['Главная','<path d="M3 11l9-8 9 8v10H3z"/>'],facts:['Факты','<path d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z"/>'],hist:['История','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>']};
 const SC=['совсем не про меня','скорее нет','трудно сказать','скорее да','точно про меня'];
 const svg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 document.querySelectorAll('[data-n]').forEach(b=>b.innerHTML=svg(NAV[b.dataset.n][1])+NAV[b.dataset.n][0]);
@@ -101,7 +106,7 @@ const hap=(k,v)=>{try{ver('6.1')&&tg.HapticFeedback[k](v)}catch(e){}};
 const ask=(m,cb)=>{if(ver('6.2'))tg.showConfirm(m,ok=>{ok&&cb()});else if(confirm(m))cb()};
 const vhs=()=>document.documentElement.style.setProperty('--vh',((tg&&tg.viewportStableHeight)||innerHeight)+'px');
 vhs();addEventListener('resize',vhs);
-if(tg){try{tg.ready();tg.expand();tg.onEvent('viewportChanged',vhs);if(ver('6.9')){tg.setHeaderColor('#0f0d22');tg.setBackgroundColor('#0f0d22')}if(ver('7.7'))tg.disableVerticalSwipes();tg.BackButton.onClick(()=>{const f={int:A.home,q:A.qback,res:A.home}[st.view];f&&f()})}catch(e){}}
+if(tg){try{tg.ready();tg.expand();tg.onEvent('viewportChanged',vhs);if(ver('8.0')){const ins=()=>{const a=tg.safeAreaInset||{},c=tg.contentSafeAreaInset||{},r=document.documentElement.style;r.setProperty('--st',((a.top||0)+(c.top||0))+'px');r.setProperty('--sb',(a.bottom||0)+'px')};ins();['safeAreaChanged','contentSafeAreaChanged','fullscreenChanged'].forEach(e=>tg.onEvent(e,ins));try{tg.requestFullscreen()}catch(e){}}if(ver('6.9')){tg.setHeaderColor('#0f0d22');tg.setBackgroundColor('#0f0d22')}if(ver('7.7'))tg.disableVerticalSwipes();tg.BackButton.onClick(()=>{const f={int:A.home,q:A.qback,res:A.home,facts:A.home}[st.view];f&&f()})}catch(e){}}
 function bb(){try{if(ver('6.1'))st.view==='home'?tg.BackButton.hide():tg.BackButton.show()}catch(e){}}
 /* История: в Telegram — в облаке (CloudStorage, общая между устройствами), плюс копия в localStorage.
    В записи хранятся id профессий (не названия), чтобы влезало в лимит 4096 символов на ключ. */
@@ -122,21 +127,38 @@ function show(view,html,nav){st.view=view;bb();M.innerHTML=html;M.scrollTop=0;do
  M.querySelectorAll('.pct').forEach(el=>{const v=+el.dataset.v,t0=performance.now()+350;(function f(n){const p=Math.min(1,Math.max(0,(n-t0)/900));el.textContent=Math.round(v*(1-Math.pow(1-p,3)))+'%';if(p<1)requestAnimationFrame(f)})(performance.now())})}
 const histRows=(h,cur)=>h.map((e,i)=>({e,i})).reverse().slice(0,5).map(({e,i},k)=>`<button class="hrow rise ${cur&&e.t===cur.t?'on':''}" style="--i:${k+3};--h:${hue(e.results[0].name)}" data-act="open" data-i="${i}"><span class="av">${esc(e.results[0].name[0])}</span><div><b>${esc(e.results[0].name)} · ${e.results[0].score}%</b><small>${e.date}</small></div><span class="mini">Открыть</span></button>`).join('');
 function home(){const h=HIST;show('home',`<h1 ${R(0)}>Какая профессия вам подходит?</h1><p class="sub rise" style="--i:1">${nm?'Привет, '+esc(nm)+'! ':''}Выберите интересы, ответьте на ${D.questions.length} коротких вопросов — и получите список подходящих профессий.</p>
-<div class="row rise" style="--i:2"><button class="btn red big" data-act="start">Пройти тест</button>${h.length?'<button class="btn ghost big" data-act="open" data-i="'+(h.length-1)+'">Последний результат</button>':''}</div>${h.length?'<h3 class="rise" style="--i:3">Недавние результаты</h3>'+histRows(h):''}`,'home')}
+<div class="row rise" style="--i:2"><button class="btn red big" data-act="start">Пройти тест</button>${h.length?'<button class="btn ghost big" data-act="open" data-i="'+(h.length-1)+'">Последний результат</button>':''}</div><button class="tease rise" style="--i:3" data-act="facts"><small>ФАКТ ДНЯ</small><b>${esc(FACTS[fi].t)}</b><span>${esc(FACTS[fi].x)}</span></button>${h.length?'<h3 class="rise" style="--i:4">Недавние результаты</h3>'+histRows(h):''}`,'home')}
 function interests(){const c=st.sel.length;show('int',`<div class="top rise"><span class="chip">Шаг 1 из 2</span><span class="chip" id="cnt">Выбрано: ${c}</span></div><h2 ${R(1)}>Что вам интересно?</h2><p class="sub rise" style="--i:2">Отметьте всё, что откликается.</p>
 <div class="grid">${D.interests.map(([k,l],i)=>{const on=st.sel.includes(k);return`<button class="card rise ${on?'on':''}" style="--i:${i+3};--h:${i*36+10}" data-act="tog" data-k="${k}" aria-pressed="${on}"><span class="thumb">${svg(IC[k])}<span class="tick">${svg('<path d="M5 12l5 5 9-10"/>')}</span></span><span class="t">${esc(l)}</span><small>${on?'Выбрано':'Нажмите, чтобы выбрать'}</small></button>`}).join('')}</div>
-<div class="foot rise" style="--i:14"><button class="btn ghost" data-act="home">Назад</button><button class="btn red" data-act="toq">Далее</button></div>`,'test')}
+<div class="foot rise" style="--i:14"><button class="btn ghost" data-act="home">Назад</button><button class="btn red" data-act="toq">Далее</button></div>`,'home')}
 function question(d=0){const i=st.q,n=D.questions.length,f0=st.prog,f1=(i+1)/n;st.prog=f1;
  show('q',`<div class="top"><span class="chip">Вопрос ${i+1} из ${n}</span></div><div class="prog"><i style="transform:scaleX(${f0});--x:0" data-to="${f1}"></i></div>
 <div class="qcard ${d?'slide':'rise'}" style="--d:${d}"><p class="q">${esc(D.questions[i][0])}</p><div class="opts">${SC.map((l,j)=>`<button class="opt ${st.ans[i]===j+1?'on':''}" data-act="ans" data-v="${j+1}"><b>${j+1}</b><span>${l}</span></button>`).join('')}</div></div>
-<div class="foot"><button class="btn ghost" data-act="qback">Назад</button><button class="btn red" data-act="qnext">${i+1<n?'Далее':'Результат'}</button></div>`,'test')}
+<div class="foot"><button class="btn ghost" data-act="qback">Назад</button><button class="btn red" data-act="qnext">${i+1<n?'Далее':'Результат'}</button></div>`,'home')}
 function results(e){const r=e.results,h=HIST;
  show('res',`<div class="top rise"><span class="chip">Тест от ${e.date}</span></div><h1 ${R(1)}>Вам подходят</h1>
 <div class="res"><div><div class="mixes">${r.slice(0,4).map((p,i)=>`<div class="mix rise" style="--i:${i+2};--h:${hue(p.name)}"><div class="mixl">${esc(p.name)}</div><div class="mixr"><b class="pct" data-v="${p.score}">0%</b></div></div>`).join('')}</div>
 ${r.slice(4).map((p,i)=>`<div class="lrow rise" style="--i:${i+6}"><span>${esc(p.name)}</span><span>${p.score}%</span><div class="bar"><i style="--v:${p.score/100}"></i></div></div>`).join('')}
 <p class="sub rise" style="--i:9;margin-top:18px">${esc(r[0].desc)}</p></div>
 <div><h3 class="rise" style="--i:2">История тестов</h3>${histRows(h,e)}<div class="row rise" style="--i:8;margin:18px 0 0;flex-direction:column;align-items:flex-start"><button class="btn red" data-act="start">Пройти заново</button><button class="link" data-act="wipe">Очистить историю</button></div></div></div>`,'hist')}
-const A={home,start(){st.sel=[];st.ans.fill(0);st.q=0;st.prog=0;interests()},
+const FACTS=[
+{k:'words',t:'Откуда слово «профессия»',x:'Оно восходит к латинскому professio — «объявление, публичное заявление».'},
+{k:'tech',t:'Первый «компьютер» был человеком',x:'Слово computer раньше означало человека, который вычисляет вручную. Целые команды таких «вычислителей» работали, например, в NASA.'},
+{k:'tech',t:'Откуда взялось слово «робот»',x:'Оно пришло из пьесы Карела Чапека «R.U.R.» (1920), от чешского robota — «подневольный труд».'},
+{k:'tech',t:'Мотылёк в компьютере',x:'В 1947 году операторы Harvard Mark II нашли в реле мотылька и приклеили его в журнал. Позже эту запись прославили как «первый баг», хотя слово «баг» для неполадок использовали и раньше.'},
+{k:'people',t:'Фамилии-профессии',x:'Кузнецов, Портнов, Мельников, Гончаров, Плотников — все эти фамилии произошли от ремесла предков.'},
+{k:'business',t:'Бухгалтер — «держатель книги»',x:'Слово пришло из немецкого Buchhalter: Buch — «книга», halten — «держать».'},
+{k:'business',t:'Менеджер и лошади',x:'Английское manage восходит к итальянскому maneggiare — «управлять лошадью, объезжать».'},
+{k:'health',t:'Доктор — это «учитель»',x:'Слово doctor происходит от латинского docere — «учить». Сначала так называли учёных наставников.'},
+{k:'hands',t:'Архитектор — «главный строитель»',x:'От греческого architekton: archi — «главный», tekton — «строитель».'},
+{k:'science',t:'«Самая привлекательная профессия»',x:'В 2012 году журнал Harvard Business Review назвал специалиста по данным самой привлекательной профессией XXI века.'},
+{k:'art',t:'Фонарщики',x:'В городах работали фонарщики: они вручную зажигали и гасили газовые фонари. Профессия исчезла вместе с газовым освещением.'},
+{k:'art',t:'Откуда взялся «UX»',x:'Термин user experience ввёл в начале 1990-х Дон Норман, когда работал в Apple.'}];
+let fi=Math.floor(Date.now()/864e5)%FACTS.length;
+function facts(sw){const f=FACTS[fi];show('facts',`<div class="top rise"><span class="chip">Интересные факты</span></div><h2 ${R(1)}>Знаете ли вы?</h2><p class="sub rise" style="--i:2">Небольшие истории о словах, людях и профессиях.</p>
+<div class="hero ${sw?'slide':'rise'}" style="--i:3;--d:1;--h:${fi*40+20}"><small>${sw?'СЛУЧАЙНЫЙ ФАКТ':'ФАКТ ДНЯ'}</small><h3>${esc(f.t)}</h3><p>${esc(f.x)}</p><button class="btn ghost" data-act="fnext">Другой факт</button></div>
+<div class="grid fgrid">${FACTS.map((x,i)=>`<div class="card fcard rise" style="--i:${i+4};--h:${i*30+10}"><span class="thumb">${svg(IC[x.k])}</span><span class="t">${esc(x.t)}</span><small>${esc(x.x)}</small></div>`).join('')}</div>`,'facts')}
+const A={home,facts,fnext(){fi=(fi+1)%FACTS.length;facts(1)},start(){st.sel=[];st.ans.fill(0);st.q=0;st.prog=0;interests()},
  hist(){const h=HIST;h.length?results(h[h.length-1]):toast('Пока нет сохранённых результатов')},
  open(b){const e=HIST[+b.dataset.i];if(e)results(e)},
  tog(b){const k=b.dataset.k,on=!st.sel.includes(k);on?st.sel.push(k):st.sel.splice(st.sel.indexOf(k),1);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('small').textContent=on?'Выбрано':'Нажмите, чтобы выбрать';$('#cnt').textContent='Выбрано: '+st.sel.length},
